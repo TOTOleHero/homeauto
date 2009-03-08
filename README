@@ -8,8 +8,8 @@ HOW TO SET-UP THE FILES:
     Inside the "apache" folder there is...
         An SVG document, "htdocs/apt.svg".
             This file contains the floorplan diagram.
-        A JavaScript file, "htdocs/main.js".
-            This file contains the JavaScript functions for creating the badges, the AJAX request functions, and some other goodies.
+            This file also contains the JavaScript functions for creating the badges, the AJAX request functions, and some other goodies.
+
         A Python CGI file, "cgi-bin/acceptJSON.cgi".
             This file accepts input from the Python hardware abstraction and outputs (in JSON format) the sensor ID and status to the SVG document.
 
