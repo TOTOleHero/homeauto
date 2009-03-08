@@ -1,0 +1,7 @@
+http://www.ftdichip.com/Drivers/VCP.htm:
+
+    Required for FT2232H and FT4232H support.
+    Required for 2.4 kernels that require FT2232 support.  FT2232 support included in kernel 2.6.9 or greater.  Developed by Bill Ryder.  Instructions in ReadMe file. 
+    
+    All other devices included in kernel 2.4.20 or greater (see ReadMe for 232R device support).
+        

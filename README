@@ -1,0 +1,39 @@
+Michael Goldberger - March 2009
+v 0.1
+
+Python, Perl, JavaScript, and SVG Home Automation Control & Display Setup
+
+HOW TO SET-UP THE FILES:
+=========================
+    Inside the "apache" folder there is...
+        An SVG document, "htdocs/apt.svg".
+            This file contains the floorplan diagram.
+        A JavaScript file, "htdocs/main.js".
+            This file contains the JavaScript functions for creating the badges, the AJAX request functions, and some other goodies.
+        A Python CGI file, "cgi-bin/acceptJSON.cgi".
+            This file accepts input from the Python hardware abstraction and outputs (in JSON format) the sensor ID and status to the SVG document.
+
+    The "htdocs/*" files should go inside the apache DocumentRoot folder (currently hardcoded to "C:\Apache2\htdocs" in the "xPL/xplpython.py" file)
+
+    The "cgi-bin/*" files should go inside an Apache ScriptAlias tag (usually one level above htdocs, and the folder is called cgi-bin).
+
+    In order to allow the SVG document to receive update notices from the hardware sensors, the USB->COM port driver has to be installed.
+        NB: see the setups folder for more info
+
+HOW TO RUN IT:
+===============
+
+    Once the files are all setup as described above, start the Perl xPL hub which bridges all of the xPL network segments and receives xPL messages.
+        xPL/xplhub.pl
+
+    And, start the Python xPL/JSON Bridge.
+        xPL/xplpython.py
+
+    At this point, the Perl stdout device should be showing the Python script's connection, 
+    and the Python stdout device should be showing the status messages of the sensors for which it is receiving data.
+
+    If you navigate to http://<host>/apt.svg and manually activate the sensor, within 5 seconds (changable in main.js),
+    the Status badge for the javascript ID assigned to the device with a correspoinding hex ID, it will
+    change to GREEN, for when the sensor is ready to be armed,
+    and RED when it is in ALERT status (also meaning that the zone to which this sensor belongs cannot be armed)
+
