@@ -3,6 +3,10 @@ import sqlite3
 class Sensor:
     statusReady = False
     statusArmed = False
+    id = None
+    hexid = None
+    name = None
+    type = None
 
     try:
         conn = sqlite3.connect('devices.db')
@@ -46,10 +50,10 @@ class Sensor:
 
 
             if len(resultSet) == 1:
-                returnRS['id'] = resultSet[0][0]
-                returnRS['hexid'] = resultSet[0][1]
-                returnRS['name'] = resultSet[0][2]
-                returnRS['type'] = resultSet[0][3]
+                self.id = returnRS['id'] = resultSet[0][0]
+                self.hexid = returnRS['hexid'] = resultSet[0][1]
+                self.name = returnRS['name'] = resultSet[0][2]
+                self.type = returnRS['type'] = resultSet[0][3]
                
                 return returnRS
             else:
