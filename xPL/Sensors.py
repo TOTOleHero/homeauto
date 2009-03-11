@@ -1,6 +1,9 @@
 import sqlite3
 
 class Sensor:
+    statusReady = False
+    statusArmed = False
+
     try:
         conn = sqlite3.connect('devices.db')
         isConn = True

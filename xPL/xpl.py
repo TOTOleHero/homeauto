@@ -1,5 +1,5 @@
 from socket import *
-from SensorLookup import Sensor
+from Sensors import Sensor
 import re,select,sys
 import json
 import urllib
@@ -76,8 +76,10 @@ class xplHandler:
         
                     if self.messageDict['command'] == 'alert':               
                         self.xplToJSON(ds10a['name'], 'alert')
+                        sensor.statusReady = False
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: OPEN"
                     if self.messageDict['command'] == 'normal':
+                        sensor.statusReady = True
                         self.xplToJSON(ds10a['name'], 'normal')
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: CLOSED"
                     
