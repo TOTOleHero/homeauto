@@ -44,13 +44,17 @@ class xplHandler:
     def startListener (self, UDPSock = None):
         
         self.computername = self.validInstance(self.computername)
-        
+
         while UDPSock :
             readable, writeable, errored = select.select([UDPSock],[],[],60)
     
             if len(readable) == 1 :
                 data,addr = UDPSock.recvfrom(self.message_buffer)
                 messageArray = data.splitlines()
+                
+                logLineHeader = "\nFULL XPL MESSAGE FOLOWING:\n"
+                logLineFooter = "\nEND XPL MESSAGE\n\n"
+
                 try:
                     for msgLine in messageArray:
                         if msgLine == '{':
@@ -60,11 +64,27 @@ class xplHandler:
                 except:
                     print "No Curly Braces To Remove"
             
+                xplmsglog = open("xplmsglog.log", "a")
+                xplmsglog.write(logLineHeader)
+                xplmsglog.write(str(messageArray))
+                xplmsglog.write(logLineFooter)
+                xplmsglog.close()
+
                 if messageArray[0] == 'xpl-trig':
                     for msgLine in messageArray:
                         if msgLine.find('=') != -1:
                             kvArray = msgLine.partition('=')
                             self.messageDict[kvArray[0]] = kvArray[2]
+
+                    #-----   TODO: Replace xPL message dictionary with xplMessage class  -----#
+                    ###########################################################################
+                    # xplMessage.* instead of messageDict[*], makes handling much more agile  #
+                    # Will allow for handling of all of the different types of xPL messages   #
+                    # Will filter information returned based on qualifiers of the message     #
+                    #                                                                         #
+                    # print self.messageDict                                                  #
+                    # ^^^^^ useful while working on the TODO item mentioned above             #
+                    ###########################################################################
         
                     deviceId = re.match('([a-z|A-Z]+.*[0-9]+.*).([0-9]+[a-z]+)', self.messageDict['device'])
                     sensorType = deviceId.group(1)
