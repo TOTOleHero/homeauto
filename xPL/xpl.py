@@ -70,22 +70,20 @@ class xplHandler:
                 xplmsglog.write(logLineFooter)
                 xplmsglog.close()
 
+                xplMsg = xplMessage()
+                xplMsg.fullMessage = messageArray
+                xplMsg.schema = messageArray[4]
+
                 if messageArray[0] == 'xpl-trig':
+                    xplMsg.type = 'xpl-trig'
                     for msgLine in messageArray:
                         if msgLine.find('=') != -1:
                             kvArray = msgLine.partition('=')
                             self.messageDict[kvArray[0]] = kvArray[2]
 
                     #-----   TODO: Replace xPL message dictionary with xplMessage class  -----#
-                    ###########################################################################
-                    # xplMessage.* instead of messageDict[*], makes handling much more agile  #
-                    # Will allow for handling of all of the different types of xPL messages   #
-                    # Will filter information returned based on qualifiers of the message     #
-                    #                                                                         #
-                    # print self.messageDict                                                  #
-                    # ^^^^^ useful while working on the TODO item mentioned above             #
-                    ###########################################################################
-        
+                    # print self.messageDict
+
                     deviceId = re.match('([a-z|A-Z]+.*[0-9]+.*).([0-9]+[a-z]+)', self.messageDict['device'])
                     sensorType = deviceId.group(1)
                     sensorHexId = deviceId.group(2)
@@ -114,3 +112,12 @@ class xplHandler:
             request = urllib.urlopen("http://localhost/cgi-bin/acceptJSON.cgi", params)
         else:
             print "You must pass the jsId and the sensorStatus variables"
+
+
+class xplMessage:
+    fullMessage = None
+    schema = None
+    type = None
+
+    def __init__(self):
+        pass
