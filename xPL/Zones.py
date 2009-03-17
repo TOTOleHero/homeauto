@@ -78,8 +78,8 @@ class Zone:
 
             if len(resultSet) == 1:
                 self.id = returnRS['id'] = resultSet[0][0]
-                self.name = returnRS['name'] = resultSet[0][1]
-               
+                self.name = returnRS['name'] = resultSet[0][2]
+              
                 return returnRS
             else:
                 print "Wrong number of records returned (0 or more than 1)"
@@ -96,24 +96,23 @@ class Zone:
 
         c = self.conn.cursor()
         queryParams = (self.id,)
-        query = "select sensorid from zones_sensors_linked where zoneid = ?"
+        query = "select s.hexid from zones z, sensors s, zones_sensors_linked zsl where zsl.zoneid= ? and zsl.sensorid = s.id and zsl.zoneid = z.id"
         c.execute(query, queryParams)
             
         resultSet = []
-        sensorIds = []
+        sensorHexIds = []
 
         for row in c:
             resultSet.append(row)
-        print resultSet[0]
         
-        for sIds in resultSet:
-            sensorIds.append(sIds[0])
-        print sensorIds
+        for sHexIds in resultSet:
+            sensorNames.append(sHexIds[0])
 
-        for sId in sensorIds:
+        for sHexId in sensorHexIds:
             s = Sensor()
-            s.getSingleSensor('id', sId)
-            self.sensors[sId] = s
+            s.getSingleSensor('hexid', sHexId)
+            self.sensors[sHexId] = s
             del s
-        print self.sensors
-            
+
+    def isReady(self):
+        pass

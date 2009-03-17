@@ -2,7 +2,6 @@ import sqlite3
 
 class Sensor:
     statusReady = False
-    statusArmed = False
     id = None
     hexid = None
     name = None
@@ -57,7 +56,10 @@ class Sensor:
                
                 return returnRS
             else:
+                print "Query: " + query + ", Params: " + str(queryParams)
+                print "Result Set: " + str(resultSet)
                 print "Wrong number of records returned (0 or more than 1)"
+
                 return None
 
         else:

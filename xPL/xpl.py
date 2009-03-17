@@ -1,5 +1,6 @@
 from socket import *
 from Sensors import Sensor
+from Zones import Zone
 import re,select,sys
 import json
 import urllib
@@ -88,25 +89,26 @@ class xplHandler:
                     sensorType = deviceId.group(1)
                     sensorHexId = deviceId.group(2)
         
-                    sensor = Sensor()
-                    ds10a = sensor.getSingleSensor('id',1)
+                    zDen = Zone()
+                    zDen.getZoneByName('den')
+                    zDen.getLinkedSensors()
         
         
                     if self.messageDict['command'] == 'alert':               
-                        self.xplToJSON(ds10a['name'], 'alert')
-                        sensor.statusReady = False
+                        self.xplToJSON(zDen.sensors[sesnorHexId].name, 'alert')
+                        zDen.sensors[sensorHexId].statusReady = False
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: OPEN"
                     if self.messageDict['command'] == 'normal':
-                        sensor.statusReady = True
-                        self.xplToJSON(ds10a['name'], 'normal')
+                        self.xplToJSON(zDen.sensors[sensorHexId].name, 'normal')
+                        zDen.sensors[sensorHexId].statusReady = True
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: CLOSED"
                     
 
     def xplToJSON (self, jsId = None, sensorStatus = None):
         
         if jsId != None and sensorStatus != None:
-            jsonRequest = {'jsId': jsId, 'sensorStatus': sensorStatus}
-        
+            jsonRequest = {'zone':{'id': zDen.id,'name': zDen.name,'sensor'{'id': zDen.sensors[sensorHexId].id,'name': zDen.sensors[sensorHexId].name,'jsId': jsId,'sensorStatus':sensorStatus}}}
+
             #http-post
             params = urllib.urlencode(jsonRequest)
             request = urllib.urlopen("http://localhost/cgi-bin/acceptJSON.cgi", params)
