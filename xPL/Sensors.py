@@ -1,7 +1,7 @@
 import sqlite3
 
 class Sensor:
-    statusReady = False
+    status = None
     id = None
     hexid = None
     name = None
@@ -53,6 +53,7 @@ class Sensor:
                 self.hexid = returnRS['hexid'] = resultSet[0][1]
                 self.name = returnRS['name'] = resultSet[0][2]
                 self.type = returnRS['type'] = resultSet[0][3]
+                self.status = returnRS['status'] = resultSet[0][4]
                
                 return returnRS
             else:
@@ -97,3 +98,55 @@ class Sensor:
             print "You didn't pass the column and/or value"
             return None
 
+    def getStatus(self, sensorId = None):
+        if self.isConn == False:
+            print "You need a DB connection in order to get..."
+            return None
+
+        if sensorId != None:
+            c = self.conn.cursor()
+            queryParams = (sensorId,)
+            query = "select status from sensors where id = ?"
+            c.execute(query, queryParams)
+            
+            resultSet = []
+
+            for row in c:
+                resultSet.append(row)
+
+
+            if len(resultSet) == 1:
+                self.status = resultSet[0][0]
+                return self.status
+            else:
+                print "Query: " + query + ", Params: " + str(queryParams)
+                print "Result Set: " + str(resultSet)
+                print "Wrong number of records returned (0 or more than 1)"
+
+                return None
+
+        else:
+            print "You didn't pass the ID"
+            return None
+
+    def setStatus(self, sensorId = None, sensorStatus = None):
+        if self.isConn == False:
+            print "You need a DB connection in order to get..."
+            return False
+
+        if sensorId != None and sensorStatus != None:
+            c = self.conn.cursor()
+            queryParams = (sensorId, sensorStatus)
+            query = "update sensors set status = ? where id = ?"
+
+            try:
+                c.execute(query, queryParams)
+                self.conn.commit()
+                return True
+            except:
+                print "Update Failed..."
+                return False
+
+        else:
+            print "You didn't pass the ID"
+            return False

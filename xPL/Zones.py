@@ -115,4 +115,12 @@ class Zone:
             del s
 
     def isReady(self):
-        pass
+        for sensor in self.sensors:
+            status = sensor.getStatus(sensor.id)
+            if status = "alert":
+                print "Sensor: " + sensor.name + "Reported Alert Status."
+                self.statusReady = False
+                return False
+        print "All Sensors Reported Normal Status"
+        self.statusReady = True
+        return True

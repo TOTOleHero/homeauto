@@ -96,18 +96,18 @@ class xplHandler:
         
                     if self.messageDict['command'] == 'alert':               
                         self.xplToJSON(zDen.sensors[sesnorHexId].name, 'alert')
-                        zDen.sensors[sensorHexId].statusReady = False
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: OPEN"
+                        zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'alert')
+                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: OPEN"
                     if self.messageDict['command'] == 'normal':
                         self.xplToJSON(zDen.sensors[sensorHexId].name, 'normal')
-                        zDen.sensors[sensorHexId].statusReady = True
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting its status as: CLOSED"
+                        zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'normal')
+                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: CLOSED"
                     
 
     def xplToJSON (self, jsId = None, sensorStatus = None):
         
         if jsId != None and sensorStatus != None:
-            jsonRequest = {'zone':{'id': zDen.id,'name': zDen.name,'sensor'{'id': zDen.sensors[sensorHexId].id,'name': zDen.sensors[sensorHexId].name,'jsId': jsId,'sensorStatus':sensorStatus}}}
+            jsonRequest = {'sensor':{'jsId': jsId,'sensorStatus':sensorStatus}}
 
             #http-post
             params = urllib.urlencode(jsonRequest)
