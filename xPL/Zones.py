@@ -70,17 +70,15 @@ class Zone:
             c.execute(query, queryParams)
             
             resultSet = []
-            returnRS = {}
 
             for row in c:
                 resultSet.append(row)
 
-
             if len(resultSet) == 1:
-                self.id = returnRS['id'] = resultSet[0][0]
-                self.name = returnRS['name'] = resultSet[0][2]
+                self.id = resultSet[0][0]
+                self.name = resultSet[0][2]
               
-                return returnRS
+                return None # No Need To Return Anything, Even On Positive Outcume
             else:
                 print "Wrong number of records returned (0 or more than 1)"
                 return None
@@ -106,7 +104,7 @@ class Zone:
             resultSet.append(row)
         
         for sHexIds in resultSet:
-            sensorNames.append(sHexIds[0])
+            sensorHexIds.append(sHexIds[0])
 
         for sHexId in sensorHexIds:
             s = Sensor()
@@ -117,7 +115,7 @@ class Zone:
     def isReady(self):
         for sensor in self.sensors:
             status = sensor.getStatus(sensor.id)
-            if status = "alert":
+            if status == "alert":
                 print "Sensor: " + sensor.name + "Reported Alert Status."
                 self.statusReady = False
                 return False

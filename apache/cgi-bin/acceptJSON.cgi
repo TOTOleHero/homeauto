@@ -2,19 +2,18 @@
 
 import cgi,json
 
-#print "Content-Type: text/x-json\n"
-form = cgi.FieldStorage()     
+form = cgi.FieldStorage()
+formFirst = form.getfirst('zone')
 
-jsId = form['jsId'].value
-sensorStatus = form['sensorStatus'].value
+#*** UNSAFE STEP - NEVER TRUST USER INPUT! ***
+ffDict = eval(formFirst)
 
-jsonReply = {'sensor':{'jsId':jsId,'sensorStatus':sensorStatus}}
-jsonReply = json.dumps(jsonReply)
+finalDict = {'zone':ffDict}
+jsonReply = json.dumps(finalDict)
 
 file_object = open("C:/Apache2/htdocs/sensorStatus.json","w")
 file_object.write(jsonReply)
 file_object.close()
 
 print "Content-Type: text/plain\n"
-print "jsId Is: " + jsId + ", sensorStatus Is: " + sensorStatus
-
+print "JSON Reply: " + jsonReply

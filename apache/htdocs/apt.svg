@@ -11,7 +11,7 @@
    width="744.09448819"
    height="1052.3622047"
    id="svg2"
-   onload="createBadge('den_south_windows', 'normal'); createBadge('den_south_windows', 'alert')"
+   onload="createBadge('den_south_windows', 'normal'); createBadge('den_south_windows', 'alert'); createBadge('den_east_windows', 'alert'); createBadge('den_east_windows', 'normal')"
    sodipodi:version="0.32"
    inkscape:version="0.46"
    sodipodi:docname="apt.svg"
@@ -338,7 +338,7 @@
     
         //create a new circle element and set the attributes
         var circle = document.createElementNS(svgNS,"circle");
-            circle.setAttributeNS(null,"id",fillColor + "Badge");
+            circle.setAttributeNS(null,"id",sensorId + "_" + fillColor + "_badge");
         	circle.setAttributeNS(null,"cx",centerX);
         	circle.setAttributeNS(null,"cy",centerY);
         	circle.setAttributeNS(null,"r",radius);
@@ -369,20 +369,20 @@
         }
     }
     
-    function badgeStatus(sensorStatus)
+    function badgeStatus(sensorId, sensorStatus)
     { 
         switch (sensorStatus)
         {
             case "normal":
-                document.getElementById('redBadge').style.visibility = 'hidden';
-                document.getElementById('greenBadge').style.visibility = 'visible';
+                document.getElementById(sensorId + '_red_badge').style.visibility = 'hidden';
+                document.getElementById(sensorId + '_green_badge').style.visibility = 'visible';
                 break;
             case "alert":
-                document.getElementById('greenBadge').style.visibility = 'hidden';
-                document.getElementById('redBadge').style.visibility = 'visible';
+                document.getElementById(sensorId + '_green_badge').style.visibility = 'hidden';
+                document.getElementById(sensorId + '_red_badge').style.visibility = 'visible';
                 break;
             default:
-                alert("Sensor Should NOT Be Sending A Status Of: " + sensorStatus);
+                alert("Sensor " + sensorId + " Should NOT Be Sending A Status Of: " + sensorStatus);
         }
     }
                 
@@ -390,12 +390,9 @@
     {
         if (xmlhttp.readyState==4)
         {// 4 = "loaded"
-            responseJSON = eval("(" + xmlhttp.responseText + ")");
-                        
-            sensorId = responseJSON.sensor.jsId;
-            sensorStatus =  responseJSON.sensor.sensorStatus;
-    
-            badgeStatus(sensorStatus);
+            responseJSON = eval(xmlhttp.responseText);
+            alert(responseJSON);
+            //badgeStatus(sensor.id, sensor.status);
         }
     }            
 </script>

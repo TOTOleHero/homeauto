@@ -95,25 +95,35 @@ class xplHandler:
         
         
                     if self.messageDict['command'] == 'alert':               
-                        self.xplToJSON(zDen.sensors[sesnorHexId].name, 'alert')
                         zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'alert')
+                        self.xplToJSON(zDen)
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: OPEN"
                     if self.messageDict['command'] == 'normal':
-                        self.xplToJSON(zDen.sensors[sensorHexId].name, 'normal')
                         zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'normal')
+                        self.xplToJSON(zDen)
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: CLOSED"
                     
 
-    def xplToJSON (self, jsId = None, sensorStatus = None):
+    def xplToJSON (self, zone = None):
         
-        if jsId != None and sensorStatus != None:
-            jsonRequest = {'sensor':{'jsId': jsId,'sensorStatus':sensorStatus}}
+        if zone != None:
+            jsonRequest = {'zone':{}}
+            jsonRequest['zone']['id'] = zone.id
+            jsonRequest['zone']['name'] = zone.name
+            for sensor in zone.sensors:
+                for i in range(len(zone.sensors)):
+                    jsonRequest['zone']['sensor' + str(i)] = {}
+                    jsonRequest['zone']['sensor' + str(i)]['id'] = zone.sensors[sensor].id
+                    jsonRequest['zone']['sensor' + str(i)]['hexid'] = zone.sensors[sensor].hexid
+                    jsonRequest['zone']['sensor' + str(i)]['name'] = zone.sensors[sensor].name
+                    jsonRequest['zone']['sensor' + str(i)]['type'] = zone.sensors[sensor].type
+                    jsonRequest['zone']['sensor' + str(i)]['status'] = zone.sensors[sensor].status
 
             #http-post
             params = urllib.urlencode(jsonRequest)
             request = urllib.urlopen("http://localhost/cgi-bin/acceptJSON.cgi", params)
         else:
-            print "You must pass the jsId and the sensorStatus variables"
+            print "You must pass the Zone object"
 
 
 class xplMessage:
