@@ -311,43 +311,41 @@
          sodipodi:role="line"
          id="tspan3305">Den</tspan></text>
   </g>
-  <script
-     type="text/ecmascript"
-     id="script55">
-    var svgNS = &quot;http://www.w3.org/2000/svg&quot;;
+  <script type="text/ecmascript">
+    var svgNS = "http://www.w3.org/2000/svg";
 
-    ajaxSensorStatus = setInterval(&quot;loadXMLDoc('http://localhost/sensorStatus.json')&quot;, 5000);
+    ajaxSensorStatus = setInterval("loadXMLDoc('http://localhost/sensorStatus.json')", 5000);
 
     function createBadge(sensorId, sensorStatus)
     {
            
-        var centerX = Math.abs(parseInt(document.getElementById(sensorId).getAttributeNS(null,&quot;x&quot;)));
-        var centerY = Math.abs(parseInt(document.getElementById(sensorId).getAttributeNS(null,&quot;y&quot;)));
+        var centerX = Math.abs(parseInt(document.getElementById(sensorId).getAttributeNS(null,"x")));
+        var centerY = Math.abs(parseInt(document.getElementById(sensorId).getAttributeNS(null,"y")));
         var radius = 13;
        
         switch (sensorStatus)
         {
-            case &quot;normal&quot;:
-                fillColor=&quot;green&quot;;
+            case "normal":
+                fillColor="green";
                 break;
-            case &quot;alert&quot;:
-                fillColor=&quot;red&quot;;
+            case "alert":
+                fillColor="red";
                 break;
             default:
-                fillColor=&quot;black&quot;;
+                fillColor="black";
         }
     
         //create a new circle element and set the attributes
-        var circle = document.createElementNS(svgNS,&quot;circle&quot;);
-            circle.setAttributeNS(null,&quot;id&quot;,sensorId + &quot;_&quot; + fillColor + &quot;_badge&quot;);
-        	circle.setAttributeNS(null,&quot;cx&quot;,centerX);
-        	circle.setAttributeNS(null,&quot;cy&quot;,centerY);
-        	circle.setAttributeNS(null,&quot;r&quot;,radius);
-        	circle.setAttributeNS(null,&quot;fill&quot;,fillColor);
-            circle.setAttributeNS(null,&quot;style&quot;,&quot;visibility:hidden;&quot;);
+        var circle = document.createElementNS(svgNS,"circle");
+            circle.setAttributeNS(null,"id",sensorId + "_" + fillColor + "_badge");
+        	circle.setAttributeNS(null,"cx",centerX);
+        	circle.setAttributeNS(null,"cy",centerY);
+        	circle.setAttributeNS(null,"r",radius);
+        	circle.setAttributeNS(null,"fill",fillColor);
+            circle.setAttributeNS(null,"style","visibility:hidden;");
             
-        document.getElementById(&quot;layer1&quot;).appendChild(circle);
-        document.getElementById('layer1').setAttribute(&quot;transform&quot;, &quot;scale(0.79)&quot;); 
+        document.getElementById("layer1").appendChild(circle);
+        document.getElementById('layer1').setAttribute("transform", "scale(0.79)"); 
     }
     
     var xmlhttp;
@@ -360,13 +358,13 @@
         if (xmlhttp!=null)
         {
             xmlhttp.onreadystatechange=state_Change;
-            xmlhttp.open(&quot;GET&quot;,url,true);
+            xmlhttp.open("GET",url,true);
             xmlhttp.send(null);
         }
         else
         {
-            alert(&quot;Get Firefox, Tool!&quot;);
-            window.location = &quot;http://www.mozilla.com/firefox/&quot;;
+            alert("Get Firefox, Tool!");
+            window.location = "http://www.mozilla.com/firefox/";
         }
     }
     
@@ -374,24 +372,24 @@
     { 
         switch (sensorStatus)
         {
-            case &quot;normal&quot;:
+            case "normal":
                 document.getElementById(sensorId + '_red_badge').style.visibility = 'hidden';
                 document.getElementById(sensorId + '_green_badge').style.visibility = 'visible';
                 break;
-            case &quot;alert&quot;:
+            case "alert":
                 document.getElementById(sensorId + '_green_badge').style.visibility = 'hidden';
                 document.getElementById(sensorId + '_red_badge').style.visibility = 'visible';
                 break;
             default:
-                alert(&quot;Sensor &quot; + sensorId + &quot; Should NOT Be Sending A Status Of: &quot; + sensorStatus);
+                alert("Sensor " + sensorId + " Should NOT Be Sending A Status Of: " + sensorStatus);
         }
     }
                 
     function state_Change()
     {
         if (xmlhttp.readyState==4)
-        {// 4 = &quot;loaded&quot;
-            alarm = eval(&quot;(&quot; + xmlhttp.responseText + &quot;)&quot;);
+        {// 4 = "loaded"
+            alarm = eval("(" + xmlhttp.responseText + ")");
             badgeStatus(alarm.zone.sensor0.name, alarm.zone.sensor0.status);
             badgeStatus(alarm.zone.sensor1.name, alarm.zone.sensor1.status);
         }

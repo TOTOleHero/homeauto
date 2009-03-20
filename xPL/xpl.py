@@ -96,17 +96,25 @@ class xplHandler:
         
                     if self.messageDict['command'] == 'alert':               
                         zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'alert')
-                        self.xplToJSON(zDen)
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: OPEN"
+                        print "COMMAND: ALERT"
+                        print "STATUS: " + zDen.sensors[sensorHexId].status
+                        self.xplToJSON('den')
+                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: ALERT"
                     if self.messageDict['command'] == 'normal':
                         zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'normal')
-                        self.xplToJSON(zDen)
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: CLOSED"
+                        print "COMMAND: NORMAL"
+                        print "STATUS: " + zDen.sensors[sensorHexId].status
+                        self.xplToJSON('den')
+                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: NORMAL"
                     
 
-    def xplToJSON (self, zone = None):
+    def xplToJSON (self, zoneName = None):
         
-        if zone != None:
+        if zoneName != None:
+            zone = Zone()
+            zone.getZoneByName(zoneName)
+            zone.getLinkedSensors()
+
             jsonRequest = {'zone':{}}
             jsonRequest['zone']['id'] = zone.id
             jsonRequest['zone']['name'] = zone.name
@@ -120,6 +128,7 @@ class xplHandler:
                     jsonRequest['zone']['sensor' + str(i)]['status'] = zone.sensors[sensor].status
 
             #http-post
+            #print "PARAMS: " + str(jsonRequest)
             params = urllib.urlencode(jsonRequest)
             request = urllib.urlopen("http://localhost/cgi-bin/acceptJSON.cgi", params)
         else:

@@ -142,6 +142,7 @@ class Sensor:
             try:
                 c.execute(query, queryParams)
                 self.conn.commit()
+                self.getStatus(sensorId)
                 return True
             except:
                 print "Update Failed..."
