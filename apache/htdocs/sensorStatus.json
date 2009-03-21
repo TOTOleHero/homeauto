@@ -1,1 +1,1 @@
-{"zone": {"sensor1": {"status": "normal", "hexid": "0xc", "type": "X10Security", "id": 1, "name": "den_south_windows"}, "sensor0": {"status": "alert", "hexid": "0xee", "type": "X10Security", "id": 1, "name": "den_east_windows"}, "id": 1, "name": "den"}}
+{"zone": {"sensor1": {"status": "normal", "hexid": "0xf", "type": "X10Security", "id": 1, "name": "den_south_windows"}, "sensor0": {"status": "alert", "hexid": "0xc", "type": "X10Security", "id": 2, "name": "den_east_windows"}, "id": 1, "name": "den", "status": "alert"}}

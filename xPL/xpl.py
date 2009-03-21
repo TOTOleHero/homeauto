@@ -96,8 +96,6 @@ class xplHandler:
         
                     if self.messageDict['command'] == 'alert':               
                         zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'alert')
-                        print "COMMAND: ALERT"
-                        print "STATUS: " + zDen.sensors[sensorHexId].status
                         self.xplToJSON('den')
                         print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: ALERT"
                     if self.messageDict['command'] == 'normal':
@@ -111,21 +109,34 @@ class xplHandler:
     def xplToJSON (self, zoneName = None):
         
         if zoneName != None:
+            i = 0
+
             zone = Zone()
             zone.getZoneByName(zoneName)
             zone.getLinkedSensors()
+            zone.isReady()
 
             jsonRequest = {'zone':{}}
+
+            if zone.statusReady == True:
+                jsonRequest['zone']['status'] = "normal"
+            elif zone.statusReady == False:
+                jsonRequest['zone']['status'] = "alert"
+            else:
+                jsonRequest['zone']['status'] = "NOSTATUS"
+
             jsonRequest['zone']['id'] = zone.id
             jsonRequest['zone']['name'] = zone.name
+            print "Number of Sensors: " + str(len(zone.sensors))
+            print "Zone.sensors = " + str(zone.sensors)
             for sensor in zone.sensors:
-                for i in range(len(zone.sensors)):
-                    jsonRequest['zone']['sensor' + str(i)] = {}
-                    jsonRequest['zone']['sensor' + str(i)]['id'] = zone.sensors[sensor].id
-                    jsonRequest['zone']['sensor' + str(i)]['hexid'] = zone.sensors[sensor].hexid
-                    jsonRequest['zone']['sensor' + str(i)]['name'] = zone.sensors[sensor].name
-                    jsonRequest['zone']['sensor' + str(i)]['type'] = zone.sensors[sensor].type
-                    jsonRequest['zone']['sensor' + str(i)]['status'] = zone.sensors[sensor].status
+                jsonRequest['zone']['sensor' + str(i)] = {}
+                jsonRequest['zone']['sensor' + str(i)]['id'] = zone.sensors[sensor].id
+                jsonRequest['zone']['sensor' + str(i)]['hexid'] = zone.sensors[sensor].hexid
+                jsonRequest['zone']['sensor' + str(i)]['name'] = zone.sensors[sensor].name
+                jsonRequest['zone']['sensor' + str(i)]['type'] = zone.sensors[sensor].type
+                jsonRequest['zone']['sensor' + str(i)]['status'] = zone.sensors[sensor].status
+                i = i + 1
 
             #http-post
             #print "PARAMS: " + str(jsonRequest)

@@ -136,7 +136,7 @@ class Sensor:
 
         if sensorId != None and sensorStatus != None:
             c = self.conn.cursor()
-            queryParams = (sensorId, sensorStatus)
+            queryParams = (sensorStatus, sensorId)
             query = "update sensors set status = ? where id = ?"
 
             try:
