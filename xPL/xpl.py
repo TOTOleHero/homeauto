@@ -127,8 +127,7 @@ class xplHandler:
 
             jsonRequest['zone']['id'] = zone.id
             jsonRequest['zone']['name'] = zone.name
-            print "Number of Sensors: " + str(len(zone.sensors))
-            print "Zone.sensors = " + str(zone.sensors)
+
             for sensor in zone.sensors:
                 jsonRequest['zone']['sensor' + str(i)] = {}
                 jsonRequest['zone']['sensor' + str(i)]['id'] = zone.sensors[sensor].id
