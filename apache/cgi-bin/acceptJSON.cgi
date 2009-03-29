@@ -2,7 +2,8 @@
 
 import cgi,json
 
-apacheRoot = "C:/Apache2/htdocs/"
+apacheRoot = "C:/Documents And Settings/Michael/Desktop/homeauto/apache/htdocs"
+# apacheRoot = "/home/mike/homeauto/apache/htdocs"
 
 form = cgi.FieldStorage()
 formFirst = form.getfirst('zone')
