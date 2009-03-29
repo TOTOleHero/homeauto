@@ -7,7 +7,6 @@ import urllib
 
 class xplHandler:
     message_buffer = 1500
-    messageDict = {}
     jsonRequest = {}
     xpl_port = 50002
     computername = gethostname()
@@ -52,9 +51,9 @@ class xplHandler:
             if len(readable) == 1 :
                 data,addr = UDPSock.recvfrom(self.message_buffer)
                 messageArray = data.splitlines()
-                
-                logLineHeader = "\nFULL XPL MESSAGE FOLOWING:\n"
-                logLineFooter = "\nEND XPL MESSAGE\n\n"
+               
+                # logLineHeader = "\nFULL XPL MESSAGE FOLOWING:\n"
+                # logLineFooter = "\nEND XPL MESSAGE\n\n"
 
                 try:
                     for msgLine in messageArray:
@@ -65,46 +64,28 @@ class xplHandler:
                 except:
                     print "No Curly Braces To Remove"
             
-                xplmsglog = open("xplmsglog.log", "a")
-                xplmsglog.write(logLineHeader)
-                xplmsglog.write(str(messageArray))
-                xplmsglog.write(logLineFooter)
-                xplmsglog.close()
+                # xplmsglog = open("xplmsglog.log", "a")
+                # xplmsglog.write(logLineHeader)
+                # xplmsglog.write(str(messageArray))
+                # xplmsglog.write(logLineFooter)
+                # xplmsglog.close()
 
-                xplMsg = xplMessage()
-                xplMsg.fullMessage = messageArray
-                xplMsg.schema = messageArray[4]
-
-                if messageArray[0] == 'xpl-trig':
-                    xplMsg.type = 'xpl-trig'
-                    for msgLine in messageArray:
-                        if msgLine.find('=') != -1:
-                            kvArray = msgLine.partition('=')
-                            self.messageDict[kvArray[0]] = kvArray[2]
-
-                    #-----   TODO: Replace xPL message dictionary with xplMessage class  -----#
-                    # print self.messageDict
-
-                    deviceId = re.match('([a-z|A-Z]+.*[0-9]+.*).([0-9]+[a-z]+)', self.messageDict['device'])
-                    sensorType = deviceId.group(1)
-                    sensorHexId = deviceId.group(2)
+                xplMsg = xplMessage(messageArray)
+                xplMsg.parseMessage()
+                        
+                zDen = Zone()
+                zDen.getZoneByName('den')
+                zDen.getLinkedSensors()
         
-                    zDen = Zone()
-                    zDen.getZoneByName('den')
-                    zDen.getLinkedSensors()
-        
-        
-                    if self.messageDict['command'] == 'alert':               
-                        zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'alert')
+                if xplMsg.type == "xpl-trig":
+                    if xplMsg.statusDict['command'] == 'alert':               
+                        zDen.sensors[xplMsg.statusDict['sensorHexId']].setStatus(zDen.sensors[xplMsg.statusDict['sensorHexId']].id,'alert')
                         self.xplToJSON('den')
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: ALERT"
-                    if self.messageDict['command'] == 'normal':
-                        zDen.sensors[sensorHexId].setStatus(zDen.sensors[sensorHexId].id,'normal')
-                        print "COMMAND: NORMAL"
-                        print "STATUS: " + zDen.sensors[sensorHexId].status
+                        print "Sensor (Type:" + xplMsg.statusDict['sensorType'] + ", ID: " + xplMsg.statusDict['sensorHexId'] + ") is reporting status: ALERT"
+                    if xplMsg.statusDict['command'] == 'normal':
+                        zDen.sensors[xplMsg.statusDict['sensorHexId']].setStatus(zDen.sensors[xplMsg.statusDict['sensorHexId']].id,'normal')
                         self.xplToJSON('den')
-                        print "Sensor (Type:" + sensorType + ", ID: " + sensorHexId + ") is reporting status: NORMAL"
-                    
+                        print "Sensor (Type:" + xplMsg.statusDict['sensorType'] + ", ID: " + xplMsg.statusDict['sensorHexId'] + ") is reporting status: NORMAL"
 
     def xplToJSON (self, zoneName = None):
         
@@ -119,11 +100,11 @@ class xplHandler:
             jsonRequest = {'zone':{}}
 
             if zone.statusReady == True:
-                jsonRequest['zone']['status'] = "normal"
+                jsonRequest['zone']['isReady'] = "true"
             elif zone.statusReady == False:
-                jsonRequest['zone']['status'] = "alert"
+                jsonRequest['zone']['isReady'] = "false"
             else:
-                jsonRequest['zone']['status'] = "NOSTATUS"
+                jsonRequest['zone']['isReady'] = "NOSTATUS"
 
             jsonRequest['zone']['id'] = zone.id
             jsonRequest['zone']['name'] = zone.name
@@ -149,6 +130,46 @@ class xplMessage:
     fullMessage = None
     schema = None
     type = None
+    statusDict = {}
 
-    def __init__(self):
-        pass
+    def __init__(self, messageArray = None):
+        if messageArray != None:
+            self.fullMessage = messageArray
+            self.schema = self.fullMessage[4]
+
+            if self.fullMessage[0] == 'xpl-trig':
+                self.type = 'xpl-trig'
+            elif self.fullMessage[0] == 'xpl-stat':
+                self.type = 'xpl-stat'
+            else:
+                self.type = 'OTHER'
+            
+        else:
+            print "You must pass the message array"
+            return None
+
+    def parseMessage(self):
+        if self.type != None:
+            if self.type == "xpl-trig":
+                if self.schema == "x10.security":
+                    for msgLine in self.fullMessage:
+                        if msgLine.find('=') != -1:
+                            kvArray = msgLine.partition('=')
+                            self.statusDict[kvArray[0]] = kvArray[2]
+
+                    deviceId = re.match('([a-z|A-Z]+.*[0-9]+.*).([0-9]+[a-z]+)', self.statusDict['device'])
+                    self.statusDict['sensorType'] = deviceId.group(1)
+                    self.statusDict['sensorHexId'] = deviceId.group(2)
+                    
+                else:
+                    print "Unkown xpl-trig schema"
+                    return None
+            elif self.type == "xpl-stat":
+               print "xpl-stat Message, ignoring."
+            
+            else:
+                print "Unknown Message Type"
+                return None
+        else:
+            print "Your instance must have a message type"
+            return None
