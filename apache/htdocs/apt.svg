@@ -318,7 +318,7 @@
     var svgNS = "http://www.w3.org/2000/svg";
 
     document.getElementById('layer1').setAttribute("tansform", "scale(0.79)"); 
-    ajaxSensorStatus = setInterval("loadXMLDoc('http://localhost/sensorStatus.json')", 5000);
+    ajaxSensorStatus = setInterval("loadXMLDoc('/cgi-bin/displayJSON.cgi')", 5000);
 
     function createBadge(sensorId, sensorStatus)
     {
