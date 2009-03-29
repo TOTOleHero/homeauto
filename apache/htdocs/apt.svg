@@ -398,18 +398,18 @@
             
             dl = document.getElementsByClassName(alarm.zone.name + "_line")
             
-            switch (alarm.zone.status)
+            switch (alarm.zone.isReady)
             {
-                case "normal":
+                case "true":
                     for (var i = 0; i &lt; dl.length; i++)
                     {
-                        dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: green; stroke-width: 2px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
+                        dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: green; stroke-width: 3px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
                     }
                     break;
-                case "alert":
+                case "false":
                     for (var i = 0; i &lt; dl.length; i++)
                     {
-                        dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: red; stroke-width: 3px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
+                        dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: black; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
                     }
                     break;
                 default:
@@ -417,6 +417,16 @@
                     {
                         dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: black; stroke-width: 1px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
                     }
+            }
+
+            switch (alarm.zone.isArmed)
+            {
+                case "true":
+                    for (var i = 0; i &lt; dl.length; i++)
+                    {
+                        dl[i].setAttributeNS(null,"style", "fill: none; fill-rule: evenodd; stroke: red; stroke-width: 3px; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1;");
+                    }
+                    break;
             }
         }
     }            
