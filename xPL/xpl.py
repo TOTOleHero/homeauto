@@ -106,6 +106,9 @@ class xplHandler:
             else:
                 jsonRequest['zone']['isReady'] = "NOSTATUS"
 
+            # Hardcoded isArmed - FALSE Status until I figure out arming
+            jsonRequest['zone']['isArmed'] = "false"
+
             jsonRequest['zone']['id'] = zone.id
             jsonRequest['zone']['name'] = zone.name
 
